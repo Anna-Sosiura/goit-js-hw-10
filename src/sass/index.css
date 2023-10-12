@@ -36,10 +36,10 @@
 display: flex;
 align-items: center;
     }
-    .is-hidden {
+.is-hidden {
         display: none;
       }
-      .description{
+.description{
         width: 700px;
       }
       
