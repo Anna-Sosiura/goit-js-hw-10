@@ -15,50 +15,45 @@ import {
     error:document.querySelector('.error'),
     catInfo:document.querySelector('.cat-info'),
   }
-  refs.loader.classList.add('is-hidden');
   refs.error.classList.add('is-hidden');
-  refs.catInfo.classList.add('is-hidden');
+  refs.breedSelect.classList.add('is-hidden');
   
-
   const breedsArray=[];
-
   fetchBreeds().then(data=>{data.forEach(element => {breedsArray.push({
     text:element.name, value:element.id})});
+    refs.breedSelect.classList.remove('is-hidden');
+    refs.loader.classList.replace('loading','is-hidden');
     new SlimSelect({
       select: refs.breedSelect,
       data: breedsArray,
-    });
-  });
-  
-    refs.breedSelect.addEventListener('change',onSelect);
-   
-    function onSelect(event){
-      refs.loader.classList.replace('is-hidden', 'loading');
-      
-      const breedId=event.currentTarget.value;
+      events: {
+        afterChange: (element) => {
+          const breedId=element[0].value;
+          refs.loader.classList.add('is-hidden');
+          refs.loader.classList.replace('is-hidden','loading');
+          refs.catInfo.classList.add('is-hidden');
         fetchCatByBreed(breedId)
         
       .then(data=>{
-
-
-        refs.loader.classList.replace('loading','is-hidden');
+        refs.loader.classList.replace('is-hidden','loading');
       refs.catInfo.innerHTML=`<div><h2>${data[0].breeds[0].name}</h2><img src="${data[0].url}" alt="${data[0].breeds[0].name}" width="700"/>
       <p>${data[0].breeds[0].temperament}</p>
       <p class="description">${data[0].breeds[0].description}</p>
       </div>`;
+      
       refs.catInfo.classList.remove('is-hidden');
+      refs.loader.classList.replace('loading','is-hidden');
     })
       .catch (onError) 
       }
+        }
+    });
+  
       function onError(){
         refs.loader.classList.replace('loading','is-hidden');
         refs.breedSelect.classList.remove('is-hidden');
         refs.catInfo.classList.add('is-hidden');
         Notify.failure(`Oops! Something went wrong! Try reloading the page!`);
-      }
+      }})
     
-    
-
-
-
   
